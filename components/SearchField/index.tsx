@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { Suspense, useCallback, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import styles from './index.module.css';
 
@@ -19,17 +19,20 @@ export default function SearchField() {
   const inputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
   const defaultQuery = searchParams.get('q') || '';
+
   return (
-    <input
-      type="search"
-      name="q"
-      ref={inputRef}
-      className={styles.search}
-      placeholder="Search..."
-      onKeyDown={_onEnter}
-      onCompositionStart={startComposition}
-      onCompositionEnd={endComposition}
-      defaultValue={defaultQuery}
-    />
+    <Suspense>
+      <input
+        type="search"
+        name="q"
+        ref={inputRef}
+        className={styles.search}
+        placeholder="Search..."
+        onKeyDown={_onEnter}
+        onCompositionStart={startComposition}
+        onCompositionEnd={endComposition}
+        defaultValue={defaultQuery}
+      />
+    </Suspense>
   );
 }

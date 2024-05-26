@@ -1,6 +1,7 @@
-import { getList } from '@/libs/microcms';
+import { getArticleSearch } from '@/libs/mirror';
 import ArticleList from '@/components/ArticleList';
-import Pagination from '@/components/Pagination';
+// import Pagination from '@/components/Pagination';
+import { notFound } from 'next/navigation';
 
 type Props = {
   searchParams: {
@@ -11,14 +12,12 @@ type Props = {
 export const revalidate = 60;
 
 export default async function Page({ searchParams }: Props) {
-  const data = await getList({
-    q: searchParams.q,
-  });
+  if (!searchParams.q) return notFound();
 
-  return (
-    <>
-      <ArticleList articles={data.contents} />
-      <Pagination totalCount={data.totalCount} basePath="/search" q={searchParams.q} />
-    </>
-  );
+  const keyword = decodeURIComponent(searchParams.q).trim();
+  if (!keyword) return notFound();
+
+  const articles = await getArticleSearch(keyword);
+
+  return <ArticleList articles={articles} />;
 }

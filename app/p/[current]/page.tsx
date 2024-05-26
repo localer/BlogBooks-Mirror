@@ -1,5 +1,4 @@
-import { getList } from '@/libs/microcms';
-import { LIMIT } from '@/constants';
+import { getArticles } from '@/libs/mirror';
 import Pagination from '@/components/Pagination';
 import ArticleList from '@/components/ArticleList';
 
@@ -12,15 +11,12 @@ type Props = {
 export const revalidate = 60;
 
 export default async function Page({ params }: Props) {
-  const current = parseInt(params.current as string, 10);
-  const data = await getList({
-    limit: LIMIT,
-    offset: LIMIT * (current - 1),
-  });
+  const currentPageId = parseInt(params.current as string, 10);
+  const articles = await getArticles(currentPageId);
   return (
     <>
-      <ArticleList articles={data.contents} />
-      <Pagination totalCount={data.totalCount} current={current} />
+      <ArticleList articles={articles} />
+      <Pagination current={currentPageId} />
     </>
   );
 }

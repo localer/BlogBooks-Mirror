@@ -1,4 +1,4 @@
-import { Tag } from '@/libs/microcms';
+import { Tag } from '@/libs/mirror';
 import TagList from '@/components/TagList';
 import SearchField from '@/components/SearchField';
 import styles from './index.module.css';
@@ -11,7 +11,7 @@ export default function Nav({ tags }: Props) {
   return (
     <nav className={styles.nav}>
       <SearchField />
-      <TagList tags={tags} />
+      {/* <TagList tags={tags} /> */}
     </nav>
   );
 }

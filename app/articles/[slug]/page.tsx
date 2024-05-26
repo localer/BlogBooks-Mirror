@@ -1,38 +1,32 @@
 import { Metadata } from 'next';
-import { getDetail } from '@/libs/microcms';
+import { getArticle, getWriter } from '@/libs/mirror';
 import Article from '@/components/Article';
 
 type Props = {
   params: {
     slug: string;
   };
-  searchParams: {
-    dk: string;
-  };
 };
 
 export const revalidate = 60;
 
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
-  const data = await getDetail(params.slug, {
-    draftKey: searchParams.dk,
-  });
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const article = await getArticle(params.slug);
 
   return {
-    title: data.title,
-    description: data.description,
+    title: article.title.rendered,
+    description: article.excerpt.rendered,
     openGraph: {
-      title: data.title,
-      description: data.description,
-      images: [data?.thumbnail?.url || ''],
+      title: article.title.rendered,
+      description: article.excerpt.rendered,
+      images: article.jetpack_featured_media_url ?? "",
     },
   };
 }
 
-export default async function Page({ params, searchParams }: Props) {
-  const data = await getDetail(params.slug, {
-    draftKey: searchParams.dk,
-  });
+export default async function Page({ params }: Props) {
+  const article = await getArticle(params.slug);
+  const writer = await getWriter(article.author);
 
-  return <Article data={data} />;
+  return <Article article={article} writer={writer} />;
 }

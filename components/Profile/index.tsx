@@ -1,32 +1,21 @@
+import Image from 'next/image';
 import styles from './index.module.css';
-import { Writer } from '@/libs/microcms';
+import { Writer } from '@/libs/mirror';
 
 type Props = {
   writer?: Writer;
 };
 
 export default function Profile({ writer }: Props) {
-  if (!writer) {
-    return null;
-  }
+  if (!writer) return null;
+
   return (
     <div className={styles.wrapper}>
-      <picture>
-        <source
-          type="image/webp"
-          srcSet={`${writer?.image?.url}?fm=webp&fit=crop&96&h=96 1x, ${writer?.image?.url}?fm=webp&fit=crop&w=96&h=96&dpr=2 2x`}
-        />
-        <img
-          src={writer?.image?.url}
-          alt=""
-          className={styles.icon}
-          width={writer?.image?.width}
-          height={writer?.image?.height}
-        />
-      </picture>
+      <Image src={writer.avatar_urls[24]} alt={`${writer.name}のアイコン`} className={styles.writerIcon} width={128} height={128} />
+
       <div className={styles.content}>
-        <p className={styles.name}>{writer?.name}</p>
-        <p className={styles.profile}>{writer?.profile}</p>
+        <p className={styles.name}>{writer.name}</p>
+        <p className={styles.profile}>{writer.description}</p>
       </div>
     </div>
   );

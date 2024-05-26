@@ -1,66 +1,54 @@
 import { formatRichText } from '@/libs/utils';
-import { type Article } from '@/libs/microcms';
+import type { Article, Writer } from '@/libs/mirror';
 import PublishedDate from '../Date';
 import styles from './index.module.css';
 import TagList from '../TagList';
 import Profile from '../Profile';
+import Image from 'next/image';
+import React, { useMemo } from 'react';
+import { parse } from 'dom-parser-react';
 
 type Props = {
-  data: Article;
+  article: Article;
+  writer: Writer;
 };
 
-export default function Article({ data }: Props) {
+export default function Article({ article, writer }: Props) {
+  const articleContent = useMemo(() => formatRichText(article.content.rendered), [article.content.rendered])
+
   return (
     <main className={styles.main}>
-      <h1 className={styles.title}>{data.title}</h1>
-      <TagList tags={data.tags} />
-      <p className={styles.description}>{data.description}</p>
+      {/* タイトル */}
+      <h1 className={styles.title}>{article.title.rendered}</h1>
+
+      {/* タグ */}
+      <TagList tagIds={article.tags} />
+
+      {/* 投稿抜粋 */}
+      <p className={styles.description}>{article.excerpt.rendered}</p>
+
+      {/* メタデータ: 投稿者情報 & 投稿日時 */}
       <div className={styles.meta}>
-        {data.writer && (
-          <div className={styles.writer}>
-            <picture>
-              <source
-                type="image/webp"
-                srcSet={`${data.writer?.image?.url}?fm=webp&fit=crop&w=48&h=48 1x, ${data.writer?.image?.url}?fm=webp&fit=crop&w=48&h=48&dpr=2 2x`}
-              />
-              <img
-                src={data.writer?.image?.url}
-                alt=""
-                className={styles.writerIcon}
-                width={data.writer?.image?.width}
-                height={data.writer?.image?.height}
-              />
-            </picture>
-            <span className={styles.writerName}>{data.writer?.name}</span>
-          </div>
-        )}
-        <PublishedDate date={data.publishedAt || data.createdAt} />
+        {/* 投稿者情報 */}
+        <div className={styles.writer}>
+          <Image src={writer.avatar_urls[24]} alt={`${writer.name}のアイコン`} className={styles.writerIcon} width={128} height={128} />
+          <span className={styles.writerName}>{writer.name}</span>
+        </div>
+        {/* 投稿日時 */}
+        <PublishedDate date={article.date} />
       </div>
-      <picture>
-        <source
-          type="image/webp"
-          media="(max-width: 640px)"
-          srcSet={`${data.thumbnail?.url}?fm=webp&w=414 1x, ${data.thumbnail?.url}?fm=webp&w=414&dpr=2 2x`}
-        />
-        <source
-          type="image/webp"
-          srcSet={`${data.thumbnail?.url}?fm=webp&fit=crop&w=960&h=504 1x, ${data.thumbnail?.url}?fm=webp&fit=crop&w=960&h=504&dpr=2 2x`}
-        />
-        <img
-          src={data.thumbnail?.url}
-          alt=""
-          className={styles.thumbnail}
-          width={data.thumbnail?.width}
-          height={data.thumbnail?.height}
-        />
-      </picture>
+
+      {/* 投稿内容 */}
+      { article.jetpack_featured_media_url != "" && <Image src={article.jetpack_featured_media_url} alt="サムネイル画像" className={styles.thumbnail} width={14467} height={9744} />}
       <div
         className={styles.content}
         dangerouslySetInnerHTML={{
-          __html: `${formatRichText(data.content)}`,
+          __html: `${articleContent}`,
         }}
       />
-      <Profile writer={data.writer} />
+
+      {/* 投稿者情報 */}
+      <Profile writer={writer} />
     </main>
   );
 }

@@ -46,3 +46,11 @@ ol,
 ul {
   list-style: none;
 }
+
+img {
+  object-fit: cover;
+}
+
+video {
+  width: 100%;
+}

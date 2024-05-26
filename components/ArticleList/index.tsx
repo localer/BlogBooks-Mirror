@@ -1,4 +1,4 @@
-import { Article } from '@/libs/microcms';
+import type { Article } from '@/libs/mirror';
 import ArticleListItem from '../ArticleListItem';
 
 type Props = {
@@ -6,12 +6,9 @@ type Props = {
 };
 
 export default function ArticleList({ articles }: Props) {
-  if (!articles) {
-    return null;
-  }
-  if (articles.length === 0) {
-    return <p>記事がありません。</p>;
-  }
+  if (!articles) return null;
+  if (articles.length == 0) return <p>記事がありません。</p>;
+
   return (
     <ul>
       {articles.map((article) => (

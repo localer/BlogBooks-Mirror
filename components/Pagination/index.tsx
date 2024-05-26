@@ -1,16 +1,16 @@
 import Link from 'next/link';
 import styles from './index.module.css';
-import { LIMIT } from '@/constants';
+import { totalpages } from '@/libs/mirror';
 
 type Props = {
-  totalCount: number;
   current?: number;
   basePath?: string;
   q?: string;
 };
 
-export default function Pagination({ totalCount, current = 1, basePath = '', q }: Props) {
-  const pages = Array.from({ length: Math.ceil(totalCount / LIMIT) }).map((_, i) => i + 1);
+export default function Pagination({ current = 1, basePath = '', q }: Props) {
+  const pages = Array.from({ length: totalpages }).map((_, i) => i + 1);
+
   return (
     <ul className={styles.container}>
       {pages.map((p) => (

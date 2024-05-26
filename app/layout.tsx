@@ -36,3 +36,9 @@ export default async function RootLayout({ children }: Props) {
     </html>
   );
 }
+
+/**
+ * Edge and Node.js Runtimes
+ * @link https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes
+ */
+export const runtime = "edge";
